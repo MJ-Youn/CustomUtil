@@ -2,44 +2,34 @@ package com.dev2.intern.util;
 
 import java.io.File;
 
+/**
+ * static method안에서는 @Value나 @Autowired된 값을 사용할 수 없다.
+ * 따라서 이 소스에서는 properties안에 있는 fileDirectory의 값을
+ * 호출하는 service로 부터 받아서 진행한다.
+ */
 public class FileUtil {
-	
-	public static final String FILE_DIRECTORY = "E:\\01. 인턴\\files\\";
-	
-    /**
-	 * 저장할 Directory가 없을 경우 생성하기 위한 함수
-	 */
-	public static void checkExistDirectory() {
-		File directory = new File(FILE_DIRECTORY);
-		
-		if (directory.exists() == false) {
-			directory.mkdirs();
+
+		private static void createDirectory(String fileDirectory) {
+			File directory = new File(fileDirectory);
+
+			if (directory.exists() == false) {
+				directory.mkdirs();
+			}
 		}
-	}
-	
-	public static boolean saveFile(MultipartFile file) {
-		return false;
-	}
-	
-	public static Time extractVideoDuration(String path) {
-		URL url;
-		Player player = null;
-		
-		try {
-			url = new URL(path);
-			player = Manager.createPlayer(url);
-		} catch (MalformedURLException murle) {
-			murle.printStackTrace();
-		} catch (NoPlayerException ne) {
-			ne.printStackTrace();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+
+		public static String saveFile(MultipartFile multipartFile, String fileDirectory) throws IllegalStateException, IOException {
+			createDirectory(fileDirectory);
+
+			String storedFileName = fileDirectory + UuidUtil.createUuidWithoutHyphen();
+			File file = new File(storedFileName);
+			multipartFile.transferTo(file);
+
+			return storedFileName;
 		}
-		
-		return player.getDuration();
-	}
-	
-	public static boolean deleteFile(String path) {
-		return false;
-	}
+
+		public static boolean deleteFile(String location) {
+			File file = new File(location);
+
+			return file.delete();
+		}
 }
