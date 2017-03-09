@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.util.NumberUtils;
@@ -57,10 +58,8 @@ public class DataUtil {
 		Field[] srcFields = srcClass.getDeclaredFields();
 		Field[] targetFields = targetClass.getDeclaredFields();
 
-		@SuppressWarnings("unchecked")
-		List<String> srcFieldNames = (List<String>) Arrays.asList(srcFields).stream().map(srcField -> (srcField.getName()));
-		@SuppressWarnings("unchecked")
-		List<String> targetFieldNames = (List<String>) Arrays.asList(targetFields).stream().map(targetField -> (targetField.getName()));
+		List<String> srcFieldNames = Arrays.asList(srcFields).stream().map(srcField -> (srcField.getName())).collect(Collectors.toList());
+		List<String> targetFieldNames = (List<String>) Arrays.asList(targetFields).stream().map(targetField -> (targetField.getName())).collect(Collectors.toList());
 
 		Field srcField;
 		boolean srcAccessible;
@@ -139,8 +138,7 @@ public class DataUtil {
 
 		Field[] fields = targetClass.getDeclaredFields();
 
-		@SuppressWarnings("unchecked")
-		List<String> fieldNames = (List<String>) Arrays.asList(fields).stream().map(field -> (field.getName()));
+		List<String> fieldNames = (List<String>) Arrays.asList(fields).stream().map(field -> (field.getName())).collect(Collectors.toList());
 
 		while (keyIterator.hasNext()) {
 			Object keyName = keyIterator.next();
