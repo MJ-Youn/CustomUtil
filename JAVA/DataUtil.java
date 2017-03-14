@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
@@ -198,6 +200,8 @@ public class DataUtil {
 				value = ((BigDecimal) value).floatValue();
 			} else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
 				value = (((BigDecimal) value).intValue() == 1) ? true : false;
+			} else if (field.getType() == LocalDateTime.class) {
+				value = new Timestamp(NumberUtils.parseNumber(value.toString(), Long.class)).toLocalDateTime();
 			} else if (field.getType() == Date.class) {
 				value = new Date(((BigDecimal) value).longValue());
 			} else {
@@ -205,13 +209,19 @@ public class DataUtil {
 			}
 		} else {
 			if (field.getType() == int.class || field.getType() == Integer.class) {
-				value = NumberUtils.parseNumber((String) value, Integer.class);
+				value = NumberUtils.parseNumber(value.toString(), Integer.class);
 			} else if (field.getType() == long.class || field.getType() == Long.class) {
-				value = NumberUtils.parseNumber((String) value, Long.class);
+				value = NumberUtils.parseNumber(value.toString(), Long.class);
 			} else if (field.getType() == float.class || field.getType() == Float.class) {
-				value = NumberUtils.parseNumber((String) value, Float.class);
+				value = NumberUtils.parseNumber(value.toString(), Float.class);
 			} else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
 				value = BooleanUtils.toBoolean((String) value);
+			} else if (field.getType() == LocalDateTime.class) {
+				if (value.getClass() == Timestamp.class) {
+					value = ((Timestamp) value).toLocalDateTime();
+				} else {
+					value = new Timestamp(NumberUtils.parseNumber(value.toString(), Long.class)).toLocalDateTime();
+				}
 			} else if (field.getType() == Date.class) {
 				value = (Date) value;
 			} else {
