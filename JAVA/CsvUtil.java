@@ -38,13 +38,13 @@ public class CsvUtil {
 			csvString = createHeader(fieldName);
 
 			for (Object item : list) {
-				csvString = csvString + CSVWriter.RFC4180_LINE_END + creatCsvLine(item, fieldList, clazz);
+				csvString = csvString + CSVWriter.RFC4180_LINE_END + createCsvLine(item, fieldList, clazz);
 			}
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException iae) {
 			iae.printStackTrace();
 		}
 
-		return ArrayUtils.addAll(encodingUTF8BOM(), csvString.getBytes());
+		return ArrayUtils.addAll(encodeUTF8BOM(), csvString.getBytes());
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class CsvUtil {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	private static String creatCsvLine(Object object, Field [] fieldList, Class<?> clazz) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
+	private static String createCsvLine(Object object, Field [] fieldList, Class<?> clazz) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
 		String line = "";
 
 		if (StringUtils.equals(object.getClass().getName(), clazz.getName()) == true) {
@@ -91,9 +91,9 @@ public class CsvUtil {
 				fieldList[i].setAccessible(true);
 
 				if (StringUtils.equals(line, "") == true) {
-					line = objectToString(fieldList[i].get(object));
+					line = convertObjectToString(fieldList[i].get(object));
 				} else {
-					line = line + CSVWriter.DEFAULT_SEPARATOR + objectToString(fieldList[i].get(object));
+					line = line + CSVWriter.DEFAULT_SEPARATOR + convertObjectToString(fieldList[i].get(object));
 				}
 
 				fieldList[i].setAccessible(accessible);
@@ -110,7 +110,7 @@ public class CsvUtil {
 	 * 			변환할 데이터
 	 * @return
 	 */
-	private static String objectToString(Object object) {
+	private static String convertObjectToString(Object object) {
 		return object == null ? "-" : object.toString();
 	}
 
@@ -119,7 +119,7 @@ public class CsvUtil {
 	 *
 	 * @return
 	 */
-	private static byte [] encodingUTF8BOM() {
+	private static byte [] encodeUTF8BOM() {
 		byte [] encoding = new byte[6];
 
 		encoding[0] = (byte) 239;

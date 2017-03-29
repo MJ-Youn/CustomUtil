@@ -1,4 +1,4 @@
-package net.lguplus.subwaywifi.util;
+package io.github.mj_youn.testapplication.Util;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
