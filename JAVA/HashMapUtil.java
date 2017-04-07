@@ -3,6 +3,12 @@ package com.dev2.intern.util;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ * @author MJYoun
+ * @since 2017. 03. 06.
+ *
+ */
 public class HashMapUtil {
 	public static Map<Object, Object> createHashMap() {
 		return new HashMap<Object, Object>();

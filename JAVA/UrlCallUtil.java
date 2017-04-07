@@ -12,6 +12,12 @@ import java.net.URL;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ *
+ * @author MJYoun
+ * @since 2017. 03. 06.
+ *
+ */
 public class UrlCallUtil {
 
 	private static final String CONTENT_TYPE = "application/json";

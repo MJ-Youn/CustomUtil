@@ -3,6 +3,12 @@ package com.dev2.intern.util;
 import java.io.File;
 
 /**
+ *
+ * @author MJYoun
+ * @since 2017. 03. 06.
+ *
+ */
+/**
  * static method안에서는 @Value나 @Autowired된 값을 사용할 수 없다.
  * 따라서 이 소스에서는 properties안에 있는 fileDirectory의 값을
  * 호출하는 service로 부터 받아서 진행한다.

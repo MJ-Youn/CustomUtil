@@ -19,6 +19,12 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.NumberUtils;
 
+/**
+ *
+ * @author MJYoun
+ * @since 2017. 03. 06.
+ *
+ */
 public class DataUtil {
 
 	/**

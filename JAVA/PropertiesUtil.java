@@ -4,6 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 /**
+ *
+ * @author MJYoun
+ * @since 2017. 03. 06.
+ *
+ */
+/**
  * 이 소스는 빈으로 생성하여 사용하는 util을 다룬것
  * ReloadableResourceBundleMessageSource를 이미 생성되어 있는 bean을 autowired하여 사용해야하는데,
  * static method에선 bean을 사용할 수 없기 때문에 이처럼 구현

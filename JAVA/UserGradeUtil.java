@@ -1,5 +1,11 @@
 package com.smartmirror.advertisement.util;
 
+/**
+ *
+ * @author MJYoun
+ * @since 2017. 03. 06.
+ *
+ */
 public enum UserGradeUtil {
 	MEMBER(0, "ROLE_MEMBER"),
 	ANONYMOUS(-1, "ROLE_ANONYMOUS"),
