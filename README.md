@@ -1,8 +1,15 @@
 # Please keep the license.
 
-## Dependency
+## Java Dependency
 
-|Name|version|
+|Name|Version|
 |---|---| 
 |Java|1.8+|
 |apache.commons.lang3|-|
+
+## JQuery Dependency
+
+|Name|Version|
+|---|---|
+|JQuery|2.x +|
+|JQuery UI|1.x +|
