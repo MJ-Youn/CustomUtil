@@ -4,7 +4,7 @@
 
 |Name|Version|
 |---|---| 
-|Java|1.8+|
+|Java|1.8 +|
 |apache.commons.lang3|3.x +|
 
 ## JQuery Dependency
