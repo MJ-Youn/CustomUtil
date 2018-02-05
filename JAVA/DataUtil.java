@@ -1,4 +1,4 @@
-package io.github.mj_youn.testapplication.Util;
+package org.boardtest.api.util;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -43,8 +43,7 @@ public class DataUtil {
 		try {
 			t = genericType.newInstance();
 			converterDataToData(object, t);
-		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException | NoSuchFieldException
-				| SecurityException e) {
+		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException | NoSuchFieldException | SecurityException e) {
 			e.printStackTrace();
 		}
 
@@ -320,6 +319,52 @@ public class DataUtil {
 	 */
 	private static boolean isNotObject(Field field) {
 		return (field.getType() == long.class || field.getType() == int.class || field.getType() == float.class || field.getType() == boolean.class);
+	}
+	
+	/**
+	 * Object의 field를 print해주는 함수
+	 * 
+	 * @param object
+	 * 			toString할 object
+	 * @return object의 필드 값들을 확인 할 수 있는 toString
+	 */
+	public static String toString(Object object) {
+		Class<?> clazz = object.getClass();
+		Field[] fields = clazz.getDeclaredFields();
+		List<String> fieldNames = Arrays.asList(fields).stream().map(field -> (field.getName())).collect(Collectors.toList());
+		StringBuffer stringBuffer = new StringBuffer();
+		
+		Field field = null;
+		boolean accessible = false;
+		
+		try {
+			stringBuffer.append("<")
+						.append(clazz.getName())
+						.append(">[");
+			
+			for (int i = 0 ; i < fieldNames.size() ; i++) {
+				String fieldName = fieldNames.get(i);
+				
+				field = clazz.getDeclaredField(fieldName);
+				accessible = field.isAccessible();
+				
+				field.setAccessible(true);
+				
+				stringBuffer.append(fieldName)
+							.append(": ")
+							.append(field.get(object) == null ? "null":field.get(object))
+							.append(i < fieldNames.size()-1 ? ", ":"");
+				
+				field.setAccessible(accessible);
+				field = null;
+			}
+			
+			stringBuffer.append("]");
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		
+		return stringBuffer.toString();
 	}
 
 }
