@@ -1,4 +1,4 @@
-package org.boardtest.api.util;
+﻿package kr.co.lguplus.nw.cert.mgmt.api.util;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -329,42 +329,46 @@ public class DataUtil {
 	 * @return object의 필드 값들을 확인 할 수 있는 toString
 	 */
 	public static String toString(Object object) {
-		Class<?> clazz = object.getClass();
-		Field[] fields = clazz.getDeclaredFields();
-		List<String> fieldNames = Arrays.asList(fields).stream().map(field -> (field.getName())).collect(Collectors.toList());
-		StringBuffer stringBuffer = new StringBuffer();
-		
-		Field field = null;
-		boolean accessible = false;
-		
-		try {
-			stringBuffer.append("<")
-						.append(clazz.getName())
-						.append(">[");
+		if (object == null) {
+			return "null";
+		} else {
+			Class<?> clazz = object.getClass();
+			Field[] fields = clazz.getDeclaredFields();
+			List<String> fieldNames = Arrays.asList(fields).stream().map(field -> (field.getName())).collect(Collectors.toList());
+			StringBuffer stringBuffer = new StringBuffer();
 			
-			for (int i = 0 ; i < fieldNames.size() ; i++) {
-				String fieldName = fieldNames.get(i);
+			Field field = null;
+			boolean accessible = false;
+			
+			try {
+				stringBuffer.append("<")
+							.append(clazz.getName())
+							.append(">[");
 				
-				field = clazz.getDeclaredField(fieldName);
-				accessible = field.isAccessible();
+				for (int i = 0 ; i < fieldNames.size() ; i++) {
+					String fieldName = fieldNames.get(i);
+					
+					field = clazz.getDeclaredField(fieldName);
+					accessible = field.isAccessible();
+					
+					field.setAccessible(true);
+					
+					stringBuffer.append(fieldName)
+								.append(": ")
+								.append(field.get(object) == null ? "null":field.get(object))
+								.append(i < fieldNames.size()-1 ? ", ":"");
+					
+					field.setAccessible(accessible);
+					field = null;
+				}
 				
-				field.setAccessible(true);
-				
-				stringBuffer.append(fieldName)
-							.append(": ")
-							.append(field.get(object) == null ? "null":field.get(object))
-							.append(i < fieldNames.size()-1 ? ", ":"");
-				
-				field.setAccessible(accessible);
-				field = null;
+				stringBuffer.append("]");
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
 			}
 			
-			stringBuffer.append("]");
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
+			return stringBuffer.toString();
 		}
-		
-		return stringBuffer.toString();
 	}
 
 }
