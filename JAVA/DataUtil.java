@@ -1,4 +1,4 @@
-﻿package kr.co.lguplus.nw.cert.mgmt.api.util;
+package kr.co.lguplus.nw.cert.mgmt.api.util;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -7,6 +7,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.mapping.Collection;
 import org.springframework.util.NumberUtils;
 
 /**
@@ -40,11 +42,15 @@ public class DataUtil {
 	public static <T> T converterDataToData(Object object, Class<T> genericType) {
 		T t = null;
 
-		try {
-			t = genericType.newInstance();
-			converterDataToData(object, t);
-		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException | NoSuchFieldException | SecurityException e) {
-			e.printStackTrace();
+		if (object == null) {
+			t = null;
+		} else {
+			try {
+				t = genericType.newInstance();
+				converterDataToData(object, t);
+			} catch (IllegalArgumentException | IllegalAccessException | InstantiationException | NoSuchFieldException | SecurityException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return t;
@@ -331,44 +337,68 @@ public class DataUtil {
 	public static String toString(Object object) {
 		if (object == null) {
 			return "null";
+		} else if (object instanceof String) {
+			return object.toString();
 		} else {
 			Class<?> clazz = object.getClass();
-			Field[] fields = clazz.getDeclaredFields();
-			List<String> fieldNames = Arrays.asList(fields).stream().map(field -> (field.getName())).collect(Collectors.toList());
 			StringBuffer stringBuffer = new StringBuffer();
 			
-			Field field = null;
-			boolean accessible = false;
-			
-			try {
-				stringBuffer.append("<")
-							.append(clazz.getName())
-							.append(">[");
-				
-				for (int i = 0 ; i < fieldNames.size() ; i++) {
-					String fieldName = fieldNames.get(i);
-					
-					field = clazz.getDeclaredField(fieldName);
-					accessible = field.isAccessible();
-					
-					field.setAccessible(true);
-					
-					stringBuffer.append(fieldName)
-								.append(": ")
-								.append(field.get(object) == null ? "null":field.get(object))
-								.append(i < fieldNames.size()-1 ? ", ":"");
-					
-					field.setAccessible(accessible);
-					field = null;
+			if (clazz == ArrayList.class || clazz == List.class || clazz == Collection.class) {
+				for (Object obj : ((List<?>) object)) {
+					stringBuffer.append(toString(obj));
 				}
+ 			} else {
+				Field[] fields = clazz.getDeclaredFields();
+				List<String> fieldNames = Arrays.asList(fields).stream().map(field -> (field.getName())).collect(Collectors.toList());
 				
-				stringBuffer.append("]");
-			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
+				Field field = null;
+				boolean accessible = false;
+				
+					stringBuffer.append("<")
+								.append(clazz.getName())
+								.append(">[");
+					
+					for (int i = 0 ; i < fieldNames.size() ; i++) {
+						try {
+							String fieldName = fieldNames.get(i);
+							
+							field = clazz.getDeclaredField(fieldName);
+							accessible = field.isAccessible();
+							
+							field.setAccessible(true);
+							
+							stringBuffer.append(fieldName)
+										.append(": ")
+										.append(field.get(object) == null ? "null":field.get(object))
+										.append(i < fieldNames.size()-1 ? ", ":"");
+							
+							field.setAccessible(accessible);
+							field = null;
+						} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+							e.printStackTrace();
+						} catch (Exception e) {
+							
+						}
+					}
+					
+					stringBuffer.append("]");
+ 			}
 			
 			return stringBuffer.toString();
 		}
 	}
-
+	
+	/**
+	 * like 검색을 하기 위해 앞뒤로 %을 붙혀주는 함수
+	 * 
+	 * @param src
+	 * @return
+	 */
+	public static String toLike(String src) {
+		StringBuffer sb = new StringBuffer().append("%")
+											.append(src)
+											.append("%");
+		return sb.toString();
+	}
+	
 }
