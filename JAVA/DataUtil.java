@@ -300,10 +300,6 @@ public class DataUtil {
 		for (int i = 1; i <= columnCount; i++) {
 			columnName = StringUtils.lowerCase(rsmd.getColumnName(i));
 			
-			if (columnName.contains("_")) {
-				System.out.println(columnName);
-			}
-
 			if (targetFieldNames.contains(columnName) == true) {
 				targetField = targetClass.getDeclaredField(columnName);
 			} else if (targetFieldNames.contains(CaseUtils.toCamelCase(columnName, false, new char[]{'_'})) == true) {
