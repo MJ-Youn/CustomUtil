@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.CaseUtils;
 import org.hibernate.mapping.Collection;
 import org.springframework.util.NumberUtils;
 
@@ -298,22 +299,31 @@ public class DataUtil {
 
 		for (int i = 1; i <= columnCount; i++) {
 			columnName = StringUtils.lowerCase(rsmd.getColumnName(i));
+			
+			if (columnName.contains("_")) {
+				System.out.println(columnName);
+			}
 
 			if (targetFieldNames.contains(columnName) == true) {
 				targetField = targetClass.getDeclaredField(columnName);
-				targetAccessible = targetField.isAccessible();
+			} else if (targetFieldNames.contains(CaseUtils.toCamelCase(columnName, false, new char[]{'_'})) == true) {
+				targetField = targetClass.getDeclaredField(CaseUtils.toCamelCase(columnName, false, new char[]{'_'}));
+			} else {
+				continue;
+			}
+			
+			targetAccessible = targetField.isAccessible();
 
-				targetData = convertObjectType(rs.getObject(columnName), targetField);
+			targetData = convertObjectType(rs.getObject(columnName), targetField);
 
-				if (targetData == null && isNotObject(targetField) == true) {
-					// data가 null인데 field가 obejct가 아닐 경우 값을 넣지 않는다.
-				} else {
-					targetField.setAccessible(true);
-					targetField.set(targetObject, targetData);
+			if (targetData == null && isNotObject(targetField) == true) {
+				// data가 null인데 field가 obejct가 아닐 경우 값을 넣지 않는다.
+			} else {
+				targetField.setAccessible(true);
+				targetField.set(targetObject, targetData);
 
-					targetField.setAccessible(targetAccessible);
-					targetField = null;
-				}
+				targetField.setAccessible(targetAccessible);
+				targetField = null;
 			}
 		}
 	}
