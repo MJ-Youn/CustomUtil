@@ -203,7 +203,9 @@ public class DataUtil {
 		if (value == null) {
 
 		} else if (value.getClass() == BigDecimal.class) {
-			if (field.getType() == int.class || field.getType() == Integer.class) {
+			if (field.getType() == BigDecimal.class) {
+				value = (BigDecimal) value;
+			} else if (field.getType() == int.class || field.getType() == Integer.class) {
 				value = ((BigDecimal) value).intValue();
 			} else if (field.getType() == long.class || field.getType() == Long.class) {
 				value = ((BigDecimal) value).longValue();
